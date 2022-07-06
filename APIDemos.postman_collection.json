@@ -1,0 +1,1008 @@
+{
+	"info": {
+		"_postman_id": "8fadd3a2-c86a-426a-be70-bf1b3f20a724",
+		"name": "APIDemos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14396451"
+	},
+	"item": [
+		{
+			"name": "Booking",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\" : \"admin\",\r\n    \"password\" : \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/auth",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Employees",
+			"item": [
+				{
+					"name": "CreateEmp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"//convert json object to the javascript obeject so we can call json body data(request data) and result(resposnse result data).\r",
+									"var respBody= JSON.parse(responseBody);\r",
+									"//console.log(respBody.FirstName);\r",
+									"//console.log(respBody.Address.HouseNumber);\r",
+									"\r",
+									"var reqBody= JSON.parse(request.data);\r",
+									"\r",
+									"if(responseCode.code ==201) // condition check for response code\r",
+									"{\r",
+									"pm.environment.set(\"SetEmpId\",respBody.id);\r",
+									"// set the employee request body into the environment \r",
+									"// (variableName,value)\r",
+									"pm.environment.set(\"setEmployeeFirstName\",reqBody.FirstName);\r",
+									"pm.environment.set(\"setEmployeeLastName\",reqBody.LastName);\r",
+									"pm.environment.set(\"setEmployeeEmailID\",reqBody.Emailid);\r",
+									"\r",
+									"// set whole employee data in oboject \r",
+									"pm.environment.set(\"setEmpObject\",reqBody);\r",
+									"\r",
+									"tests[\"Verified the status code and the status code is:\"+responseCode.code]= responseCode.code == 201; //Assertion\r",
+									"tests[\"Verified the FirstName:\"+respBody.FirstName]= respBody.FirstName == reqBody.FirstName;\r",
+									"tests[\"Verify the surname:\"+respBody.SurName]= respBody.SurName == reqBody.SurName; \r",
+									"tests[\"Verified the Nationality:\"]= respBody.Nationality == reqBody.Nationality;\r",
+									"tests[\"verify the Address.city:\"]= respBody.Address.City == reqBody.Address.City;\r",
+									"tests[\"verify the Address.Postalcode:\"]= respBody.Address.PostalCode == reqBody.Address.PostalCode;\r",
+									"}\r",
+									"else\r",
+									"{\r",
+									"    //Compare the actual and expected to make falses statement OR to print false condition.\r",
+									"    tests[\"Data not get created sucessfully and status code not get matched, the status code is:\" +responseCode.code +\" instead of \"+201]= responseCode.code == 201;\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"FirstName\": \"manish\",\r\n    \"LastName\": \"sharma\",\r\n    \"Emailid\": \"piyush@gmail.com\",\r\n      \"Prefix\": \"ER.\",\r\n      \"SurName\": \"Singh\",\r\n      \"BirthSurName\": \"ssss\",\r\n      \"Email\": \"RahulTest@gmail.com\",\r\n      \"Gender\": \"Male\",\r\n      \"Type\": \"Client\",\r\n      \"DateOfBirth\": \"1992-03-08\",\r\n      \"MaritalStatus\": \"Married\",\r\n      \"EverDivorced\": false,\r\n      \"DivorceDate\": null,\r\n      \"Smoker\": false,\r\n      \"Nationality\": \"IND\",\r\n      \"Address\": {\r\n        \"Street\": \"Old Delhi\",\r\n        \"HouseNumber\": \"102\",\r\n        \"PostalCode\": \"877222\",\r\n        \"City\": \"Delhi\",\r\n        \"Country\": \"India\"\r\n      },\r\n      \"PhoneNumber\": \"06123456780\"\r\n\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/Employees",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"Employees"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserByID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"//first convert json object to the javascript obeject so we can call json body data(request data) and result(resposnse result data).\r",
+									"var respBody= JSON.parse(responseBody);\r",
+									"//console.log(respBody.FirstName);\r",
+									"//console.log(respBody.Address.HouseNumber);\r",
+									"\r",
+									"//var reqBody= JSON.parse(request.data);\r",
+									"\r",
+									"if(responseCode.code ==200) // condition check for response code\r",
+									"{\r",
+									"    //get the expected emp data.\r",
+									"    var getEmpObject= pm.environment.get(\"setEmpObject\");\r",
+									"\r",
+									"//get method for the single data get from envirenment\r",
+									"//var GetEmpFirstName = pm.environment.get(\"EmployeeFirstName\");\r",
+									"//console.log(pm.environment.get(\"EmployeeFirstName\"));\r",
+									"//excute the code login\r",
+									"tests[\"Employeee date get matched and status code is:\"+responseCode.code]= responseCode.code == 200; //Assertion\r",
+									"tests[\"Verified the FirstName and the FirstName is: \"+respBody.FirstName]= respBody.FirstName == getEmpObject.FirstName;\r",
+									"// tests[\"Verify the surname:\"+respBody.SurName]= respBody.SurName == reqBody.SurName; \r",
+									"// tests[\"Verified the Nationality:\"]= respBody.Nationality == reqBody.Nationality;\r",
+									"// tests[\"verify the Address.city:\"]= respBody.Address.City == reqBody.Address.City;\r",
+									"// tests[\"verify the Address.Postalcode:\"]= respBody.Address.PostalCode == reqBody.Address.PostalCode;\r",
+									"}\r",
+									"else\r",
+									"{\r",
+									"    //to check data fetch properly or not .\r",
+									"    tests[\"Data not get fetch sucessfully and status code not get matched, the status code is:\" +responseCode.code]= responseCode.code == 200;\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/Employees/{{SetEmpId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"Employees",
+								"{{SetEmpId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetEmpUsingQueryParam",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//convert json object into the javascript\r",
+									"var resBody = JSON.parse(responseBody);\r",
+									"//console.log(resBody[i].length);\r",
+									"\r",
+									"//get the empl id from environment and save in var getEmpID.\r",
+									"var getEmpID = pm.environment.get(\"SetEmpId\");\r",
+									"// get the whole employee obj which is created from post menthod. \r",
+									"var getsetEmpObject= pm.environment.get(\"setEmpObject\");\r",
+									"\r",
+									"for(var i = 0; i < resBody.length; i++)\r",
+									"{   \r",
+									"    if(resBody[i].id == getEmpID)\r",
+									"    {\r",
+									"        tests[\"verify the Employee firstName\"]= resBody[i].FirstName ==  getsetEmpObject.FirstName;\r",
+									"        tests[\"verify the Employee LastName\"]= resBody[i].LastName ==  getsetEmpObject.LastName;\r",
+									"        tests[\"verify the Nationality\"]= resBody[i].LastName== getsetEmpObject.LastName;\r",
+									"        break;\r",
+									"    }\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/Employees?FirstName={{setEmployeeFirstName}}&Emailid={{setEmployeeEmailID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"Employees"
+							],
+							"query": [
+								{
+									"key": "FirstName",
+									"value": "{{setEmployeeFirstName}}"
+								},
+								{
+									"key": "Emailid",
+									"value": "{{setEmployeeEmailID}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllData",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//convert json object into the javascript\r",
+									"var resBody = JSON.parse(responseBody);\r",
+									"//console.log(resBody[i].length);\r",
+									"\r",
+									"//get the empl id from environment and save in var getEmpID.\r",
+									"var getEmpID = pm.environment.get(\"SetEmpId\");\r",
+									"// get the whole employee obj which is created from post menthod. \r",
+									"var getsetEmpObject= pm.environment.get(\"setEmpObject\");\r",
+									"\r",
+									"for(var i = 0; i < resBody.length; i++)\r",
+									"{   \r",
+									"    if(resBody[i].id == getEmpID)\r",
+									"    {\r",
+									"        tests[\"verify the Employee firstName\"]= resBody[i].FirstName ==  getsetEmpObject.FirstName;\r",
+									"        tests[\"verify the Employee LastName\"]= resBody[i].LastName ==  getsetEmpObject.LastName;\r",
+									"        tests[\"verify the Nationality\"]= resBody[i].LastName== getsetEmpObject.LastName;\r",
+									"        break;\r",
+									"    }\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/Employees",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"Employees"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update the specific data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//convert json object to the java script object\r",
+									"    var respBody= JSON.parse(responseBody);\r",
+									"if (responseCode.code == 200) // true\r",
+									"{\r",
+									"    tests[\"emp data is updated and status code is\" + responseCode.code] = \r",
+									"    responseCode.code == 200;\r",
+									"}\r",
+									"else\r",
+									"{\r",
+									"    tests[\"emp data is not updated sucessfully and respose code is \"+responseCode.code] =\r",
+									"     responseCode.code == 200;;\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Prefix\": \"GB1\",\r\n    \"SurName\": \"yadav1\"\r\n \r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/Employees/{{SetEmpId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"Employees",
+								"{{SetEmpId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update with replce whole data",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Prefix\": \"GB2\",\r\n    \"SurName\": \"yadav3\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/Employees/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"Employees",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserDetailByUserId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "d9d053bc0a6ea6832dc37c13237ca431baece900cb03c1ff2163da7a3bf0f732",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://gorest.co.in/public/v1/users?email=rafaeldias@email.com",
+							"protocol": "https",
+							"host": [
+								"gorest",
+								"co",
+								"in"
+							],
+							"path": [
+								"public",
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "rafaeldias@email.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUserbyID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/Employees/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"Employees",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GitHub",
+			"item": [
+				{
+					"name": "CreateTheRepo",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "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",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/vnd.github.v3+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"yogesh som 13\",\r\n    \"description\": \"Api Desciption\",\r\n    \"homepage\": \"https:test.com\",\r\n    \"private\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.github.com/repos/1OrgAPI/yogesh",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"1OrgAPI",
+								"yogesh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetTheCreatedRepo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "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",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/vnd.github.v3+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.github.com/repos/1OrgAPI/Deepak",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"1OrgAPI",
+								"Deepak"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetTheCreatedOrgList",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "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",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/vnd.github.v3+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.github.com/orgs/1OrgAPI/repos",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"orgs",
+								"1OrgAPI",
+								"repos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PetStore_SwaggerRequest",
+			"item": [
+				{
+					"name": "Place_Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "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",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \r\n  \"petId\": 10,\r\n  \"quantity\": 100,\r\n  \"shipDate\": \"2021-12-25T12:52:47.756Z\",\r\n  \"status\": \"placed\",\r\n  \"complete\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/store/order/",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"store",
+								"order",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_Order",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/store/order/9223372036854771173",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"store",
+								"order",
+								"9223372036854771173"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreareUserWithArray",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n    \"username\": \"Api65\",\r\n    \"firstName\": \"Deep\",\r\n    \"lastName\": \"Som\",\r\n    \"email\": \"dsom1@gmail.com\",\r\n    \"password\": \"123dd\",\r\n    \"phone\": \"3232323332\",\r\n    \"userStatus\": 1\r\n    }\r\n\r\n]"
+						},
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/user/createWithArray",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"user",
+								"createWithArray"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetTheUer",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/user/Api65",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"user",
+								"Api65"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/user/login/?username=Api65&password=123dd",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"user",
+								"login",
+								""
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "Api65"
+								},
+								{
+									"key": "password",
+									"value": "123dd"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateExistingUserData",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Api65\",\r\n    \"firstName\": \"Deepdsdsd\",\r\n    \"lastName\": \"Som\",\r\n    \"email\": \"dsom1@gmail.com\",\r\n    \"password\": \"123dd\",\r\n    \"phone\": \"3232323332\",\r\n    \"userStatus\": 1\r\n}"
+						},
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/user/Api65",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"user",
+								"Api65"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UpdateEmpDataUsingPatch",
+			"item": [
+				{
+					"name": "UpdateTheMultipleData",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//convert json object to the java script object\r",
+									"    var respBody= JSON.parse(responseBody);\r",
+									"if (responseCode.code == 200) // true\r",
+									"{\r",
+									"    tests[\"emp data is updated and status code is\" + responseCode.code] = \r",
+									"    responseCode.code == 200;\r",
+									"}\r",
+									"else\r",
+									"{\r",
+									"    tests[\"emp data is not updated sucessfully and respose code is \"+responseCode.code] =\r",
+									"     responseCode.code == 200;;\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Prefix\": \"GB1\",\r\n    \"SurName\": \"yadav1\"\r\n \r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/Employees/{{SetEmpId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"Employees",
+								"{{SetEmpId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//APITEST 001: Update the data [patch] and verify the same]"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "GorestAPI",
+			"item": [
+				{
+					"name": "GetTheUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "3bed46dcfeec23653279716b150c8c3556a4e0006b148ff59c490a7e2200a1ae",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://gorest.co.in/public/v2/users/",
+							"protocol": "https",
+							"host": [
+								"gorest",
+								"co",
+								"in"
+							],
+							"path": [
+								"public",
+								"v2",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "3bed46dcfeec23653279716b150c8c3556a4e0006b148ff59c490a7e2200a1ae",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Deepak_Som\",\r\n    \"email\": \"dsom22@gmail.com\",\r\n    \"gender\": \"male\",\r\n    \"status\": \"active\"\r\n}"
+						},
+						"url": {
+							"raw": "https://gorest.co.in/public/v1/users",
+							"protocol": "https",
+							"host": [
+								"gorest",
+								"co",
+								"in"
+							],
+							"path": [
+								"public",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GettheUserByID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "3bed46dcfeec23653279716b150c8c3556a4e0006b148ff59c490a7e2200a1ae",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://gorest.co.in/public/v2/users/8721",
+							"protocol": "https",
+							"host": [
+								"gorest",
+								"co",
+								"in"
+							],
+							"path": [
+								"public",
+								"v2",
+								"users",
+								"8721"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
